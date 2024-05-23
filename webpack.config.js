@@ -1,8 +1,20 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-// import path from 'path';
+import webpack from 'webpack';
 
 export default {
   mode: process.env.NODE_ENV || 'development',
+  devtool: 'inline-source-map',
+  devServer: {
+    liveReload: true,
+    hot: true,
+    port: 7500,
+    open: true,
+  },
+  watch: true,
+  watchOptions: {
+    // Директории, которые watch будет игнорировать
+    ignored: ['/node_modules/'],
+    },
   module: {
     rules: [
       {
@@ -31,10 +43,12 @@ export default {
     ],
   },
   plugins: [
+    new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
       template: 'template.html',
     }),
   ],
+  // devtool: 'source-map',
   output: {
     clean: true,
   },
