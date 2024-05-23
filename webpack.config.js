@@ -3,14 +3,14 @@ import webpack from 'webpack';
 
 export default {
   mode: process.env.NODE_ENV || 'development',
-  devtool: 'inline-source-map',
+  devtool: 'source-map',
   devServer: {
     liveReload: true,
     hot: true,
     port: 7500,
     open: true,
   },
-  watch: true,
+  // watch: true,
   watchOptions: {
     // Директории, которые watch будет игнорировать
     ignored: ['/node_modules/'],
