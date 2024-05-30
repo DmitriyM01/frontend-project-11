@@ -46,6 +46,7 @@ export default async () => {
                     if (url === state.previousValue) throw { errors: [1] };
                     state.previousValue = url;
                     state.value = '';
+                    elements.textInput.value = '';
                 })
                 .catch((err) => {
                     // Здесь происходит что-то, если урл невалидный
