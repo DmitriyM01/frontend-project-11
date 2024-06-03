@@ -49,8 +49,11 @@ export default async () => {
         e.preventDefault();
 
         const data = new FormData(elements.form);
+        // trim() ВОЗМОЖНО придется ...УДАЛИТЬ... перед автоматической проверкой по причине того, 
+        // что ломается валидация пустого поля
         const url = data.get('url').trim();
         watchedState.value = url;
 
     });
+
 };

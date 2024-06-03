@@ -21,7 +21,7 @@ const createCard = (i18nInstance, type) => {
     return box;
 };
 
-const parseRSS = (data) => {
+export const parseRSS = (data) => {
     const parser = new DOMParser();
     const parsedData = parser.parseFromString(data, 'application/xml');
     const items = parsedData.querySelectorAll('item');
