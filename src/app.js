@@ -41,8 +41,6 @@ export default async () => {
                 uniquePosts.forEach((post) => {
                     watchedState.posts.unshift(post)
                 })
-                // console.log(uniquePosts)
-                console.log(watchedState, 999);
               })
               .catch((e) => console.log(e)));
         }

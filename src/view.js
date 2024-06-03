@@ -32,30 +32,12 @@ export default (state, elements, i18nInstance) => {
                 elements.feedback.classList.remove('text-danger');
                 elements.feedback.classList.add('text-success');
                 elements.feedback.textContent = i18nInstance.t('feedbackRequest.success');
-
-                // При первом изменении в поле фидов в состоянии запускается таймер, который получает обновленные данные,
-                // парсит их и вносит в поле фидс, после чего все повторяется уже само собой рекурсивно
-                // -> Изменилось поле фидс -> Обработчик запустился, получил данные, вставил их в поле фидс -> фиды обновились,
-                // обработчик снова запустился
-                // setTimeout(() => {
-                //     watchedState.feeds = [];
-                //     watchedState.urls.forEach((url) => {
-                //         axios
-                //             .get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`)
-                //             .then((response) => {
-                //                 if (response.data.status.http_code === 200) return parseRSS(response.data.contents);
-                //             }).then((data) => {
-                //                 watchedState.feeds.unshift(data)
-                //             })
-                //             // watchedState.feeds.unshift(getRSS(url, watchedState, i18nInstance))
-                //             // console.log(getRSS(url, watchedState, i18nInstance))
-                //         })
-                // }, 5000)
                 break;
             case 'posts':
-                renderFeeds(watchedState, elements, i18nInstance)
+                renderFeeds(watchedState, elements, i18nInstance);
+                break;
             case 'error':
-                console.log(value)
+                // console.log(value)
                 elements.textInput.classList.remove('is-valid');
                 elements.textInput.classList.add('is-invalid');
                 elements.feedback.classList.remove('text-succes');
