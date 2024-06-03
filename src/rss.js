@@ -92,7 +92,7 @@ export default (url, watchedState, i18nInstance) => {
         })
         .then((parsedRSS) => {
             parsedRSS.posts.map((post) => {
-                watchedState.posts.push(post)
+                watchedState.posts.unshift(post)
             })
             watchedState.feeds.unshift({ title: parsedRSS.title, description: parsedRSS.description });
         })

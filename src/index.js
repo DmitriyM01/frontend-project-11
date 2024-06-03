@@ -6,4 +6,4 @@ import './index.scss';
 app();
 
 // Это надо удалить
-document.querySelector('input').value = 'https://lorem-rss.hexlet.app/feed';
+document.querySelector('input').value = 'https://lorem-rss.hexlet.app/feed?unit=second&interval=3';
