@@ -1,6 +1,8 @@
 import i18next from 'i18next';
 import resources from '../locales/translation.js';
 import render from './view.js';
+import { parseRSS } from './rss.js';
+import axios from 'axios';
 
 const elements = {
     form: document.querySelector('form'),
@@ -25,7 +27,27 @@ export default async () => {
         language: 'ru',
         urls: [],
         feeds: [],
+        posts: []
     };
+
+    const checkRssUpdates = (watchedState, time) => {
+        if (watchedState.feeds.length > 0) {
+          Array.from(watchedState.urls)
+            .map((url, i) => axios.get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`)
+            .then((response) => {
+                const newPosts = parseRSS(response.data.contents).posts;
+                const postTitles = watchedState.posts.map((post) => post.title);
+                const uniquePosts = newPosts.filter((newPost) => !postTitles.includes(newPost.title));
+                uniquePosts.forEach((post) => {
+                    watchedState.posts.unshift(post)
+                })
+                // console.log(uniquePosts)
+                console.log(watchedState, 999);
+              })
+              .catch((e) => console.log(e)));
+        }
+        setTimeout(() => checkRssUpdates(watchedState, time), time);
+      };
     
     const i18nInstance = i18next.createInstance({
         lng: state.language,
@@ -55,5 +77,5 @@ export default async () => {
         watchedState.value = url;
 
     });
-
+    checkRssUpdates(watchedState, 5000)
 };

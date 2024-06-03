@@ -42,8 +42,8 @@ export const renderFeeds = (watchedState, elements, i18nInstance) => {
     elements.posts.innerHTML = "";
     const feedsCard = createCard(i18nInstance, 'feeds');
     const postsCard = createCard(i18nInstance, 'posts');
-    let feedId = 0;
     let postId = 0;
+    let feedId = 0;
 
     watchedState.feeds.forEach((feed) => {
         const li = document.createElement('li');
@@ -58,30 +58,25 @@ export const renderFeeds = (watchedState, elements, i18nInstance) => {
         li.append(feedTitle);
         li.append(feedDescription);
         feedsCard.querySelector('ul').append(li);
-
-        feed.posts.forEach((post) => {
-            const li = document.createElement('li');
-            li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
-            li.setAttribute('id', postId);
-            postId += 1;
-            li.setAttribute('for', feedId);
-
-            const a = document.createElement('a');
-            a.classList.add('fw-bold');
-            a.setAttribute('href', post.link)
-            a.setAttribute('target', '_blank')
-            a.textContent = post.title;
-
-            const button = document.createElement('button');
-            button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
-            button.textContent = i18nInstance.t('preview');
-
-            li.append(a);
-            li.append(button)
-            postsCard.querySelector('ul').append(li);
-        })
-        feedId += 1;
-    })
+    });
+   
+    watchedState.posts.forEach((post) => {
+        const li = document.createElement('li');
+        li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
+        li.setAttribute('id', postId);
+        postId += 1;
+        const a = document.createElement('a');
+        a.classList.add('fw-bold');
+        a.setAttribute('href', post.link)
+        a.setAttribute('target', '_blank')
+        a.textContent = post.title;
+        const button = document.createElement('button');
+        button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
+        button.textContent = i18nInstance.t('preview');
+        li.append(a);
+        li.append(button)
+        postsCard.querySelector('ul').append(li);
+    });
 
     elements.feeds.append(feedsCard);
     elements.posts.append(postsCard);
@@ -96,7 +91,10 @@ export default (url, watchedState, i18nInstance) => {
             throw new Error ('No response from server');
         })
         .then((parsedRSS) => {
-            watchedState.feeds.unshift(parsedRSS);
+            parsedRSS.posts.map((post) => {
+                watchedState.posts.push(post)
+            })
+            watchedState.feeds.unshift({ title: parsedRSS.title, description: parsedRSS.description });
         })
         .catch((err) =>  watchedState.error = err.message);
 };
