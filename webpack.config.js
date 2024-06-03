@@ -48,7 +48,6 @@ export default {
       template: 'template.html',
     }),
   ],
-  // devtool: 'source-map',
   output: {
     clean: true,
   },
