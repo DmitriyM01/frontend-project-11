@@ -1,5 +1,4 @@
 import axios from 'axios';
-
 const createCard = (i18nInstance, type) => {
     const box = document.createElement('div');
     box.classList.add('card', 'border-0');
@@ -21,17 +20,36 @@ const createCard = (i18nInstance, type) => {
     return box;
 };
 
-export const parseRSS = (data) => {
+const makeModal = (currentPost, elements) => {
+    const {
+        modal,
+        modalTitle,
+        modalBody,
+        modalLink,
+    } = elements;
+    const bgDiv = document.createElement('div');
+    bgDiv.classList.add('modal-backdrop', 'fade', 'show');
+    document.body.append(bgDiv);
+    modalLink.href = currentPost.link;
+    modalTitle.textContent = currentPost.title;
+    modalBody.textContent = currentPost.description;
+    modal.classList.add('show');
+    modal.style = 'display:block';
+}
+
+export const parseRSS = (data, watchedState) => {
     const parser = new DOMParser();
     const parsedData = parser.parseFromString(data, 'application/xml');
     const items = parsedData.querySelectorAll('item');
     const posts = Array.from(items).map((item) => {
-        return {
+        const post = {
             title: item.querySelector('title').textContent,
             description: item.querySelector('description').textContent,
             link: item.querySelector('link').textContent,
         };
+        return post;
     });
+    console.log(posts)
     const title = parsedData.querySelector('title').textContent;
     const description = parsedData.querySelector('description').textContent;
     return { title, description, posts }
@@ -42,13 +60,12 @@ export const renderFeeds = (watchedState, elements, i18nInstance) => {
     elements.posts.innerHTML = "";
     const feedsCard = createCard(i18nInstance, 'feeds');
     const postsCard = createCard(i18nInstance, 'posts');
-    let postId = 0;
-    let feedId = 0;
+
+    // console.log(watchedState.posts)
 
     watchedState.feeds.forEach((feed) => {
         const li = document.createElement('li');
         li.classList.add('list-group-item', 'border-0', 'border-end-0');
-        li.setAttribute('id', feedId);
         const feedTitle = document.createElement('h3');
         feedTitle.classList.add('h6', 'm-0');
         feedTitle.textContent = feed.title;
@@ -63,8 +80,7 @@ export const renderFeeds = (watchedState, elements, i18nInstance) => {
     watchedState.posts.forEach((post) => {
         const li = document.createElement('li');
         li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
-        li.setAttribute('id', postId);
-        postId += 1;
+        li.setAttribute('id', post.id);
         const a = document.createElement('a');
         a.classList.add('fw-bold');
         a.setAttribute('href', post.link)
@@ -75,8 +91,18 @@ export const renderFeeds = (watchedState, elements, i18nInstance) => {
         button.textContent = i18nInstance.t('preview');
         li.append(a);
         li.append(button)
-        postsCard.querySelector('ul').append(li);
+        postsCard.querySelector('ul').prepend(li);
     });
+
+    postsCard.addEventListener('click', (e) => {
+        if(e.target.classList.contains('btn')) {
+            const id = e.target.parentElement.id;
+            const currentPost = watchedState.posts.filter((post) => post.id == id)[0];
+
+            makeModal(currentPost, elements);
+
+        }
+    })
 
     elements.feeds.append(feedsCard);
     elements.posts.append(postsCard);
@@ -86,13 +112,14 @@ export default (url, watchedState, i18nInstance) => {
     axios
         .get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`)
         .then((response) => {
-            if (response.data.status.http_code === 200) return parseRSS(response.data.contents);
+            if (response.data.status.http_code === 200) return parseRSS(response.data.contents, watchedState);
             if (response.data.status.http_code === 404) throw new Error (404);
             throw new Error ('No response from server');
         })
         .then((parsedRSS) => {
+            console.log(parsedRSS)
             parsedRSS.posts.map((post) => {
-                watchedState.posts.unshift(post)
+                watchedState.posts.unshift(post);
             })
             watchedState.feeds.unshift({ title: parsedRSS.title, description: parsedRSS.description });
         })

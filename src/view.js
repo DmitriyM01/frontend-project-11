@@ -34,6 +34,13 @@ export default (state, elements, i18nInstance) => {
                 elements.feedback.textContent = i18nInstance.t('feedbackRequest.success');
                 break;
             case 'posts':
+                let id = 0;
+                const arr = Array.from(watchedState.posts)
+                console.log(arr)
+                arr.map((post) => {
+                    post.id = id;
+                    id += 1
+                })
                 renderFeeds(watchedState, elements, i18nInstance);
                 break;
             case 'error':

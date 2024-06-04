@@ -8,6 +8,7 @@ export default {
         posts: 'Посты',
         feeds: 'Фиды',
         preview: 'Просмотр',
+        // modalClose: 'Закрыть',
         feedbackRequest: {
             success: 'RSS успешно загружен',
             1: 'Такой RSS уже есть',

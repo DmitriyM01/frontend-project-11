@@ -10,12 +10,19 @@ const elements = {
     feedback: document.querySelector('#feedback'),
     posts: document.querySelector('.posts'),
     feeds: document.querySelector('.feeds'),
+    modal: document.querySelector('.modal'),
+    modalTitle: document.querySelector('.modal-title'),
+    modalBody: document.querySelector('.modal-body'),
+    modalLink: document.querySelector('a.full-article'),
+    modalBtnClose: document.querySelector('button[class="btn btn-secondary"]'),
+    modalBtnCloseCross: document.querySelector('button[class="btn-close close"]'),
     textNodes: {
         title: document.querySelector('title'),
         heading: document.querySelector('h1[class="display-3 mb-0"]'),
         subheading: document.querySelector('p[class="lead"]'),
         RSSLink: document.querySelector('label[for="url-input"]'),
         add: document.querySelector('button[type="submit"]'),
+        // modalClose: document.querySelector('button[data-bs-dismiss="modal"]'),
     },
 };
 
@@ -23,7 +30,6 @@ export default async () => {
     const state = {
         value: '',
         error: '',
-        feedback: '',
         language: 'ru',
         urls: [],
         feeds: [],
@@ -33,13 +39,13 @@ export default async () => {
     const checkRssUpdates = (watchedState, time) => {
         if (watchedState.feeds.length > 0) {
           Array.from(watchedState.urls)
-            .map((url, i) => axios.get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`)
+            .map((url) => axios.get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`)
             .then((response) => {
-                const newPosts = parseRSS(response.data.contents).posts;
+                const newPosts = parseRSS(response.data.contents, watchedState).posts;
                 const postTitles = watchedState.posts.map((post) => post.title);
                 const uniquePosts = newPosts.filter((newPost) => !postTitles.includes(newPost.title));
                 uniquePosts.forEach((post) => {
-                    watchedState.posts.unshift(post)
+                    watchedState.posts.push(post)
                 })
               })
               .catch((e) => console.log(e)));
@@ -75,5 +81,18 @@ export default async () => {
         watchedState.value = url;
 
     });
+
+    elements.modalBtnClose.addEventListener('click', () => {
+        modal.classList.remove('show');
+        modal.style = '';
+        document.querySelector('div.modal-backdrop').remove()
+    })
+
+    elements.modalBtnCloseCross.addEventListener('click', () => {
+        modal.classList.remove('show');
+        modal.style = '';
+        document.querySelector('div.modal-backdrop').remove()
+    })
+
     checkRssUpdates(watchedState, 5000)
 };
