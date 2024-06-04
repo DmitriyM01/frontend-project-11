@@ -94,5 +94,13 @@ export default async () => {
         document.querySelector('div.modal-backdrop').remove()
     })
 
+    document.body.addEventListener('click', (e) => {
+        if (e.target === elements.modal) {
+            modal.classList.remove('show');
+            modal.style = '';
+            document.querySelector('div.modal-backdrop').remove()
+        }
+    })
+
     checkRssUpdates(watchedState, 5000)
 };

@@ -33,6 +33,10 @@ const makeModal = (currentPost, elements) => {
     modalLink.href = currentPost.link;
     modalTitle.textContent = currentPost.title;
     modalBody.textContent = currentPost.description;
+
+    const modalContent = document.querySelector('.modal-content');
+    modalContent.classList.add('zindex-tooltip')
+
     modal.classList.add('show');
     modal.style = 'display:block';
 }
