@@ -1,6 +1,6 @@
 import { setLocale, string } from 'yup';
 import onChange from 'on-change';
-import getRSS, { parseRSS, renderFeeds } from './rss.js';
+import getRSS, { renderFeeds } from './rss.js';
 import locale from '../locales/yupLocale.js'
 import axios from 'axios';
 
@@ -35,9 +35,7 @@ export default (state, elements, i18nInstance) => {
                 break;
             case 'posts':
                 let id = 0;
-                const arr = Array.from(watchedState.posts)
-                console.log(arr)
-                arr.map((post) => {
+                watchedState.posts.map((post) => {
                     post.id = id;
                     id += 1
                 })

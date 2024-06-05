@@ -47,11 +47,11 @@ export default async () => {
                 uniquePosts.forEach((post) => {
                     watchedState.posts.push(post)
                 })
-              })
-              .catch((e) => console.log(e)));
+             })
+            .catch((e) => console.log(e)));
         }
         setTimeout(() => checkRssUpdates(watchedState, time), time);
-      };
+    };
     
     const i18nInstance = i18next.createInstance({
         lng: state.language,

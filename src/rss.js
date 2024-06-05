@@ -52,8 +52,7 @@ export const parseRSS = (data, watchedState) => {
             link: item.querySelector('link').textContent,
         };
         return post;
-    });
-    console.log(posts)
+    }).reverse();
     const title = parsedData.querySelector('title').textContent;
     const description = parsedData.querySelector('description').textContent;
     return { title, description, posts }
@@ -123,7 +122,7 @@ export default (url, watchedState, i18nInstance) => {
         .then((parsedRSS) => {
             console.log(parsedRSS)
             parsedRSS.posts.map((post) => {
-                watchedState.posts.unshift(post);
+                watchedState.posts.push(post);
             })
             watchedState.feeds.unshift({ title: parsedRSS.title, description: parsedRSS.description });
         })
