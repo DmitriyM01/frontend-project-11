@@ -1,8 +1,7 @@
 import { setLocale, string } from 'yup';
 import onChange from 'on-change';
 import getRSS, { renderFeeds } from './rss.js';
-import locale from '../locales/yupLocale.js'
-import axios from 'axios';
+import locale from '../locales/yupLocale.js';
 
 export default (state, elements, i18nInstance) => {
     setLocale(locale);
@@ -22,11 +21,11 @@ export default (state, elements, i18nInstance) => {
                 })
                 .catch((err) => {
                     // Здесь происходит что-то, если урл невалидный
-                    watchedState.error = err.message
+                    watchedState.error = err.message;
                 });
                 break;
             case 'feeds':
-                renderFeeds(watchedState, elements, i18nInstance)
+                renderFeeds(watchedState, elements, i18nInstance);
                 elements.textInput.classList.remove('is-invalid');
                 elements.textInput.classList.add('is-valid');
                 elements.feedback.classList.remove('text-danger');
@@ -35,10 +34,10 @@ export default (state, elements, i18nInstance) => {
                 break;
             case 'posts':
                 let id = 0;
-                watchedState.posts.map((post) => {
+                watchedState.posts.forEach((post) => {
                     post.id = id;
-                    id += 1
-                })
+                    id += 1;
+                });
                 renderFeeds(watchedState, elements, i18nInstance);
                 break;
             case 'error':

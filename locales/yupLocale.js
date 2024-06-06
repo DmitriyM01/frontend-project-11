@@ -5,4 +5,4 @@ export default {
     mixed: {
         notOneOf: 1,
     },
-}
+};

@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 const createCard = (i18nInstance, type) => {
     const box = document.createElement('div');
     box.classList.add('card', 'border-0');
@@ -35,13 +36,13 @@ const makeModal = (currentPost, elements) => {
     modalBody.textContent = currentPost.description;
 
     const modalContent = document.querySelector('.modal-content');
-    modalContent.classList.add('zindex-tooltip')
+    modalContent.classList.add('zindex-tooltip');
 
     modal.classList.add('show');
     modal.style = 'display:block';
-}
+};
 
-export const parseRSS = (data, watchedState) => {
+export const parseRSS = (data) => {
     const parser = new DOMParser();
     const parsedData = parser.parseFromString(data, 'application/xml');
     const items = parsedData.querySelectorAll('item');
@@ -56,12 +57,12 @@ export const parseRSS = (data, watchedState) => {
     }).reverse();
     const title = parsedData.querySelector('title').textContent;
     const description = parsedData.querySelector('description').textContent;
-    return { title, description, posts }
+    return { title, description, posts };
 };
 
 export const renderFeeds = (watchedState, elements, i18nInstance) => {
-    elements.feeds.innerHTML = "";
-    elements.posts.innerHTML = "";
+    elements.feeds.innerHTML = '';
+    elements.posts.innerHTML = '';
     const feedsCard = createCard(i18nInstance, 'feeds');
     const postsCard = createCard(i18nInstance, 'posts');
 
@@ -80,7 +81,7 @@ export const renderFeeds = (watchedState, elements, i18nInstance) => {
         li.append(feedDescription);
         feedsCard.querySelector('ul').append(li);
     });
-   
+
     watchedState.posts.forEach((post) => {
         const li = document.createElement('li');
         li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
@@ -90,57 +91,63 @@ export const renderFeeds = (watchedState, elements, i18nInstance) => {
         if (post.read) {
             a.classList.add('fw-normal', 'link-secondary');
         } else {
-            a.classList.add('fw-bold')
+            a.classList.add('fw-bold');
         }
 
-        a.setAttribute('href', post.link)
-        a.setAttribute('target', '_blank')
+        a.setAttribute('href', post.link);
+        a.setAttribute('target', '_blank');
         a.textContent = post.title;
         const button = document.createElement('button');
         button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
         button.textContent = i18nInstance.t('preview');
         li.append(a);
-        li.append(button)
+        li.append(button);
         postsCard.querySelector('ul').prepend(li);
     });
 
     postsCard.addEventListener('click', (e) => {
-        const id = e.target.parentElement.id;
-        
-        if(e.target.classList.contains('btn')) {
-            const currentPost = watchedState.posts.filter((post) => post.id == id)[0];
+        const { id } = e.target.parentElement;
+
+        if (e.target.classList.contains('btn')) {
+            const currentPost = watchedState.posts.filter((post) => post.id === Number(id))[0];
             makeModal(currentPost, elements);
         }
 
         if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') {
-            watchedState.posts.map((post) => {
-                if(post.id == id) {
+            watchedState.posts.forEach((post) => {
+                if (post.id === Number(id)) {
                     post.read = true;
                 }
-            })
+            });
             e.target.classList.remove('fw-bold');
-            e.target.classList.add('fw-normal', 'link-secondary')
+            e.target.classList.add('fw-normal', 'link-secondary');
         }
-    })
+    });
 
     elements.feeds.append(feedsCard);
     elements.posts.append(postsCard);
 };
 
-export default (url, watchedState, i18nInstance) => {
+export default (url, watchedState) => {
     axios
         .get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`)
         .then((response) => {
-            if (response.data.status.http_code === 200) return parseRSS(response.data.contents, watchedState);
-            if (response.data.status.http_code === 404) throw new Error (404);
-            throw new Error ('No response from server');
+            if (response.data.status.http_code === 200) {
+                return parseRSS(response.data.contents, watchedState);
+            }
+            if (response.data.status.http_code === 404) throw new Error(404);
+            throw new Error('No response from server');
         })
         .then((parsedRSS) => {
-            console.log(parsedRSS)
-            parsedRSS.posts.map((post) => {
+            console.log(parsedRSS);
+            parsedRSS.posts.forEach((post) => {
                 watchedState.posts.push(post);
-            })
-            watchedState.feeds.unshift({ title: parsedRSS.title, description: parsedRSS.description });
+            });
+            watchedState.feeds.unshift({
+                title: parsedRSS.title,
+                description: parsedRSS.description,
+            });
         })
-        .catch((err) =>  watchedState.error = err.message);
+        // eslint-disable-next-line no-return-assign
+        .catch((err) => watchedState.error = err.message);
 };
