@@ -50,6 +50,7 @@ export const parseRSS = (data, watchedState) => {
             title: item.querySelector('title').textContent,
             description: item.querySelector('description').textContent,
             link: item.querySelector('link').textContent,
+            read: false,
         };
         return post;
     }).reverse();
@@ -85,7 +86,13 @@ export const renderFeeds = (watchedState, elements, i18nInstance) => {
         li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
         li.setAttribute('id', post.id);
         const a = document.createElement('a');
-        a.classList.add('fw-bold');
+        // console.log(post)
+        if (post.read) {
+            a.classList.add('fw-normal', 'link-secondary');
+        } else {
+            a.classList.add('fw-bold')
+        }
+
         a.setAttribute('href', post.link)
         a.setAttribute('target', '_blank')
         a.textContent = post.title;
@@ -98,12 +105,21 @@ export const renderFeeds = (watchedState, elements, i18nInstance) => {
     });
 
     postsCard.addEventListener('click', (e) => {
+        const id = e.target.parentElement.id;
+        
         if(e.target.classList.contains('btn')) {
-            const id = e.target.parentElement.id;
             const currentPost = watchedState.posts.filter((post) => post.id == id)[0];
-
             makeModal(currentPost, elements);
+        }
 
+        if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') {
+            watchedState.posts.map((post) => {
+                if(post.id == id) {
+                    post.read = true;
+                }
+            })
+            e.target.classList.remove('fw-bold');
+            e.target.classList.add('fw-normal', 'link-secondary')
         }
     })
 
