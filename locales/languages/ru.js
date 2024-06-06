@@ -11,7 +11,7 @@ export default {
         // modalClose: 'Закрыть',
         feedbackRequest: {
             success: 'RSS успешно загружен',
-            1: 'Такой RSS уже есть',
+            1: 'RSS уже существует',
             2: 'Ссылка должна быть валидным URL',
             404: 'Ресурс не содержит валидный RSS',
             'No response from server': 'Нет ответа от сервера',

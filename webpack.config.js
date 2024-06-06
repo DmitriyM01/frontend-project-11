@@ -7,7 +7,6 @@ export default {
   devServer: {
     liveReload: true,
     hot: true,
-    port: 7500,
     open: true,
   },
   // watch: true,
