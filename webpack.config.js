@@ -13,7 +13,7 @@ export default {
   watchOptions: {
     // Директории, которые watch будет игнорировать
     ignored: ['/node_modules/'],
-    },
+  },
   module: {
     rules: [
       {

@@ -1,8 +1,8 @@
 export default {
-    string: {
-        url: 2,
-    },
-    mixed: {
-        notOneOf: 1,
-    },
+  string: {
+    url: 2,
+  },
+  mixed: {
+    notOneOf: 1,
+  },
 };
