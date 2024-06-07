@@ -46,6 +46,7 @@ export const parseRSS = (data) => {
     const parser = new DOMParser();
     const parsedData = parser.parseFromString(data, 'application/xml');
     const items = parsedData.querySelectorAll('item');
+    if (items.length === 0) throw new Error(3);
     const posts = Array.from(items).map((item) => {
         const post = {
             title: item.querySelector('title').textContent,
@@ -66,8 +67,6 @@ export const renderFeeds = (watchedState, elements, i18nInstance) => {
     const feedsCard = createCard(i18nInstance, 'feeds');
     const postsCard = createCard(i18nInstance, 'posts');
 
-    // console.log(watchedState.posts)
-
     watchedState.feeds.forEach((feed) => {
         const li = document.createElement('li');
         li.classList.add('list-group-item', 'border-0', 'border-end-0');
@@ -87,7 +86,6 @@ export const renderFeeds = (watchedState, elements, i18nInstance) => {
         li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
         li.setAttribute('id', post.id);
         const a = document.createElement('a');
-        // console.log(post)
         if (post.read) {
             a.classList.add('fw-normal', 'link-secondary');
         } else {
@@ -132,14 +130,13 @@ export default (url, watchedState) => {
     axios
         .get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`)
         .then((response) => {
+            console.log(response);
             if (response.data.status.http_code === 200) {
                 return parseRSS(response.data.contents, watchedState);
             }
-            if (response.data.status.http_code === 404) throw new Error(404);
-            throw new Error('No response from server');
+            throw new Error(404);
         })
         .then((parsedRSS) => {
-            console.log(parsedRSS);
             parsedRSS.posts.forEach((post) => {
                 watchedState.posts.push(post);
             });

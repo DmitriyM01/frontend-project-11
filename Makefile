@@ -1,3 +1,6 @@
+del: 
+	npm remove playwright
+
 dev:
 	npx webpack serve
 

@@ -41,7 +41,6 @@ export default (state, elements, i18nInstance) => {
                 renderFeeds(watchedState, elements, i18nInstance);
                 break;
             case 'error':
-                // console.log(value)
                 elements.textInput.classList.remove('is-valid');
                 elements.textInput.classList.add('is-invalid');
                 elements.feedback.classList.remove('text-succes');
