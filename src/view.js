@@ -33,6 +33,7 @@ export default (state, elements, i18nInstance) => {
         elements.feedback.textContent = i18nInstance.t('feedbackRequest.success');
         break;
       case 'posts':
+        // eslint-disable-next-line no-case-declarations
         let id = 0;
         watchedState.posts.forEach((post) => {
           post.id = id;

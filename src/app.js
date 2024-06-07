@@ -1,7 +1,7 @@
 import i18next from 'i18next';
 import axios from 'axios';
 import resources from '../locales/translation.js';
-import render from './view.js';
+import watch from './view.js';
 import { parseRSS } from './rss.js';
 
 const elements = {
@@ -57,8 +57,11 @@ export default async () => {
   const i18nInstance = i18next.createInstance({
     lng: state.language,
     resources,
+  // eslint-disable-next-line consistent-return
   }, (err, t) => {
-    if (err) return console.log('something went wrong loading', err);
+    if (err) {
+      return console.log('something went wrong loading', err);
+    }
     t('key');
   });
 
@@ -70,7 +73,7 @@ export default async () => {
   };
   loadTranslation();
 
-  const watchedState = render(state, elements, i18nInstance);
+  const watchedState = watch(state, elements, i18nInstance);
 
   elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
