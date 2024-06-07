@@ -1,5 +1,7 @@
-del: 
-	npm remove playwright
+p:
+	git add .
+	git commit -m 'qfix'
+	git push
 
 dev:
 	npx webpack serve

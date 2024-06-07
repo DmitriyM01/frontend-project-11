@@ -130,13 +130,10 @@ export default (url, watchedState) => {
     axios
         .get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`)
         .then((response) => {
-            // console.log(response);
-            // if (response.data.status.error) {
-            //     throw new Error(404);
-            // }
-            if (response.data.status.http_code === 200) {
+            if (response.status === 200) {
                 return parseRSS(response.data.contents, watchedState);
             }
+            throw new Error(404);
         })
         .then((parsedRSS) => {
             parsedRSS.posts.forEach((post) => {
